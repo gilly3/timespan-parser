@@ -1,0 +1,30 @@
+{
+  "name": "timespan-parser",
+  "version": "1.0.0",
+  "description": "Parses timespans like systemd.time(7)",
+  "main": "timespan.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/gilly3/timespan-parser.git"
+  },
+  "keywords": [
+    "timespan",
+    "systemd.time"
+  ],
+  "author": "Ivan Gilchrist",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gilly3/timespan-parser/issues"
+  },
+  "homepage": "https://github.com/gilly3/timespan-parser#readme",
+  "engines": {
+    "node": ">=6.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^5.5.0",
+    "mocha": "^5.2.0"
+  }
+}

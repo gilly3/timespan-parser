@@ -1,0 +1,7 @@
+{
+  "env": { "mocha": true },
+  "rules": {
+    // allow usage of expressions in statement position for chai
+    "no-unused-expressions": "off"
+  }
+}
