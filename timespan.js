@@ -57,6 +57,9 @@ function init(defaultUnit) {
 
     function parse(timespan, unit) {
         assert.ok(timespan, "Expected timespan");
+        if (typeof timespan === "number") {
+            timespan += "";
+        }
         assert.strictEqual(typeof timespan, "string", `Invalid timespan, expected string but got ${typeof timespan}`);
         if (unit == null) {
             unit = "";
@@ -79,6 +82,9 @@ function init(defaultUnit) {
     }
 
     function getString(value, unit) {
+        if (typeof value === "string" && /^-?\d+(\.\d+)?$/.test(value)) {
+            value = +value;
+        }
         assert.strictEqual(typeof value, "number", `Invalid value, expected number but got ${typeof value}`);
         assert.ok(isFinite(value), `Invalid value ${value}`);
         if (unit == null) {
