@@ -26,6 +26,8 @@ Node package for parsing timespans like [systemd.time(7)](https://www.freedeskto
 >     55s500ms
 >     300ms20s 5day
 
+Parsing microseconds (`usec`, `us`) is not supported.
+
 ## Install
 
 ```bash
