@@ -1,6 +1,6 @@
 {
   "name": "timespan-parser",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Parses timespans like systemd.time(7)",
   "main": "timespan.js",
   "scripts": {
