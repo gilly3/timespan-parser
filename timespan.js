@@ -67,15 +67,16 @@ function init(defaultUnit) {
         assert.strictEqual(typeof unit, "string", `Invalid unit, expected string but got ${typeof unit}`);
         const divider = units[unit];
         assert.ok(divider, `Unknown unit ${unit}`);
-        const tss = /^\s*(\d+\s*[a-z]*\s*)+$/.test(timespan) && timespan.match(/\d+\s*[a-z]*\s*/g);
+        const tss = /^\s*-?(\d+\s*[a-z]*\s*)+$/.test(timespan) && timespan.match(/\d+\s*[a-z]*\s*/g);
         assert.ok(tss, `Invalid format for timespan ${timespan}`);
+        const sign = timespan.trim().startsWith("-") ? -1 : 1;
         const value = tss.reduce((sum, ts) => sum + getValue(ts), 0);
-        return value / divider;
+        return sign * (value / divider);
     }
 
     function getValue(ts) {
         const n = parseInt(ts, 10);
-        const suf = ts.replace(/[\d\s]/g, "");
+        const suf = ts.replace(/[\d\s-]/g, "");
         const mutliplier = units[suf];
         assert.ok(mutliplier, `Invalid timespan, unknown unit ${suf}`);
         return n * mutliplier;
@@ -93,7 +94,8 @@ function init(defaultUnit) {
         assert.strictEqual(typeof unit, "string", `Invalid unit, expected string but got ${typeof unit}`);
         assert.ok(units[unit], `Unknown unit ${unit}`);
         const tss = [];
-        value = Math.round(value * units[unit]);
+        const sign = value < 0 ? "-" : "";
+        value = Math.abs(Math.round(value * units[unit]));
         const writeValue = unitName => {
             const unitVal = units[unitName];
             if (value >= unitVal) {
@@ -108,7 +110,7 @@ function init(defaultUnit) {
         writeValue("m");
         writeValue("s");
         writeValue("ms");
-        return tss.join(" ");
+        return sign + tss.join(" ");
     }
 }
 

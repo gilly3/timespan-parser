@@ -12,11 +12,18 @@ describe("parse", function () {
         assert.strictEqual(timespan.parse("55s500ms"), 55.5, "55s500ms");
         assert.strictEqual(timespan.parse("300ms20s 5day"), 0.3 + 20 + (5 * 24 * 60 * 60), "300ms20s 5day");
     });
+    it("parses negative values", function () {
+        assert.strictEqual(timespan.parse("-8h", "m"), -8 * 60, "-8h in minutes");
+    });
 });
 
 describe("getString", function () {
     it("returns parseable time strings", function () {
         const value = Math.floor(Math.random() * 5000000000);
+        assert.strictEqual(timespan.parse(timespan.getString(value)), value);
+    });
+    it("returns parseable negative time strings", function () {
+        const value = Math.floor(Math.random() * -5000000000);
         assert.strictEqual(timespan.parse(timespan.getString(value)), value);
     });
 });
