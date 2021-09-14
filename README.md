@@ -30,7 +30,7 @@ Parsing microseconds (`usec`, `us`) is not supported.
 
 ## Install
 
-```bash
+```sh
 $ npm install timespan-parser
 ```
 
@@ -81,4 +81,43 @@ const timespan = require("timespan-parser")("msec");  // Use milliseconds as the
 timespan.parse("4 hours 30 seconds");   // returns 14430000
 timespan.parse("300ms20s5day");         // returns 432020300
 timespan.getString(456789);             // returns "7m 36s 789ms"
+```
+
+## CLI
+When installed globally, two command line interfaces are available.
+```sh
+$ npm install --global timespan-parser
+```
+### `parse-timespan`
+```sh
+$ parse-timespan timespan [ unit="seconds" ]
+```
+Writes the number of seconds (or other unit, if specified) that are represented
+by the provided timespan string
+### `get-timespan`
+```sh
+$ get-timespan value [ unit="seconds" ]
+```
+Writes a timespan string that represents the number of seconds (or other unit,
+if specified) provided by value
+## CLI Examples
+```sh
+$ parse-timespan "17y 4w 6d 3h 45m 12s"
+539430312
+$ parse-timespan "4 hours 30 seconds"
+14430
+$ parse-timespan "4 hours 30 seconds" hours
+4.008333333333334
+$ parse-timespan "4 hours 30 seconds" msec
+14430000
+$ parse-timespan 300ms20s5day
+432020.3
+$ parse-timespan "300ms20s5day" y
+0.013689897203843131
+$ get-timespan 539430312
+17y 4w 6d 3h 45m 12s
+$ get-timespan 456789 
+5d 6h 53m 9s
+$ get-timespan 0.013689897203843131 y
+5d 20s 300ms
 ```

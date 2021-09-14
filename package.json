@@ -3,6 +3,10 @@
   "version": "1.0.2",
   "description": "Parses timespans like systemd.time(7)",
   "main": "timespan.js",
+  "bin": {
+    "parse-timespan": "./parse-cli.js",
+    "get-timespan": "./getstring-cli.js"
+  },
   "scripts": {
     "test": "mocha"
   },
