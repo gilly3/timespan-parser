@@ -5,7 +5,7 @@ const { getString } = require("./timespan");
 const [,, value = "", unit = ""] = process.argv;
 
 if (value != "") {
-console.log(getString(value, unit));
+    console.log(getString(value, unit));
 }
 else {
     console.log(`Usage:

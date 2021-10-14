@@ -41,14 +41,43 @@ const UNITS = {
     y
 };
 
-function init(defaultUnit) {
-    const units = Object.assign({}, UNITS);
-    if (defaultUnit) {
-        assert.strictEqual(typeof defaultUnit, "string", `Invalid unit, expected string but got ${typeof defaultUnit}`);
-        const val = units[defaultUnit];
-        assert.ok(val, `Unknown unit ${defaultUnit}`);
+const DEFAULTS = {
+    abbv: true,
+    capitalize: false,
+    valueSep: " "
+};
+
+const longname = {
+    ms: "millisecond",
+    s: "second",
+    m: "minute",
+    h: "hour",
+    d: "day",
+    w: "week",
+    M: "month",
+    y: "year"
+};
+
+function init(initOpts = {}) {
+    const units = { ...UNITS };
+    if (typeof initOpts == "string") {
+        initOpts = { unit: initOpts };
+    }
+    assert.ok(initOpts != null && typeof initOpts == "object", `Invalid defaults, expected object but got ${typeof initOpts}`);
+    const defaults = {
+        ...DEFAULTS,
+        ...initOpts
+    };
+    if (defaults.unit) {
+        assert.strictEqual(typeof defaults.unit, "string", `Invalid unit, expected string but got ${typeof defaults.unit}`);
+        const val = units[defaults.unit];
+        assert.ok(val, `Unknown unit ${defaults.unit}`);
         units[""] = val;
     }
+    if (defaults.unitSep != null) {
+        assert.strictEqual(typeof defaults.unitSep, "string", `Invalid unitSep, expected string but got ${typeof defaults.unitSep}`);
+    }
+    assert.strictEqual(typeof defaults.valueSep, "string", `Invalid valueSep, expected string but got ${typeof defaults.valueSep}`);
 
     return {
         parse,
@@ -82,24 +111,38 @@ function init(defaultUnit) {
         return n * mutliplier;
     }
 
-    function getString(value, unit) {
+    function getString(value, opts = {}) {
+        if (typeof opts === "string") {
+            opts = { unit: opts };
+        }
+        if (opts == null) {
+            opts = {};
+        }
+        const {
+            unit = "",
+            abbv = defaults.abbv,
+            capitalize = defaults.capitalize,
+            unitSep = defaults.unitSep != null ? defaults.unitSep : abbv ? "" : " ",
+            valueSep = defaults.valueSep
+        } = opts;
         if (typeof value === "string" && /^-?\d+(\.\d+)?$/.test(value)) {
             value = +value;
         }
         assert.strictEqual(typeof value, "number", `Invalid value, expected number but got ${typeof value}`);
         assert.ok(isFinite(value), `Invalid value ${value}`);
-        if (unit == null) {
-            unit = "";
-        }
         assert.strictEqual(typeof unit, "string", `Invalid unit, expected string but got ${typeof unit}`);
         assert.ok(units[unit], `Unknown unit ${unit}`);
+        assert.strictEqual(typeof abbv, "boolean", `Invalid abbv, expected boolean but got ${typeof abbv}`);
+        assert.strictEqual(typeof capitalize, "boolean", `Invalid capitalize, expected boolean but got ${typeof capitalize}`);
+        assert.strictEqual(typeof unitSep, "string", `Invalid unitSep, expected string but got ${typeof unitSep}`);
+        assert.strictEqual(typeof valueSep, "string", `Invalid valueSep, expected string but got ${typeof valueSep}`);
         const tss = [];
         const sign = value < 0 ? "-" : "";
         value = Math.abs(Math.round(value * units[unit]));
         const writeValue = unitName => {
             const unitVal = units[unitName];
             if (value >= unitVal) {
-                tss.push(Math.floor(value / unitVal) + unitName);
+                tss.push(format(Math.floor(value / unitVal), unitName));
                 value %= unitVal;
             }
         };
@@ -110,8 +153,22 @@ function init(defaultUnit) {
         writeValue("m");
         writeValue("s");
         writeValue("ms");
-        return sign + tss.join(" ");
+        return sign + tss.join(valueSep);
+
+        function format(val, unitName) {
+            if (!abbv) {
+                unitName = longname[unitName];
+                if (val != 1) {
+                    unitName += "s";
+                }
+            }
+            if (capitalize) {
+                unitName = unitName[0].toUpperCase() + unitName.slice(1);
+            }
+            return val + unitSep + unitName;
+        }
     }
 }
+
 
 module.exports = Object.assign(init, init());
